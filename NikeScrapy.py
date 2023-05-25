@@ -1,6 +1,4 @@
 from flask import Flask, jsonify
-import json
-import time
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -10,7 +8,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
-import uuid
 
 # Initialize Firebase credentials
 cred = credentials.Certificate('C:/Users/MuhammadHamza/Desktop/Scrap/shoescanner-26aa5-firebase-adminsdk-kvsjl-3c0c6319f8.json')
@@ -18,118 +15,50 @@ firebase_admin.initialize_app(cred)
 
 # Create a Firestore client
 db = firestore.client()
-# Set options for Firefox
-options = Options()
-options.add_argument('-headless')
+
 # Create Flask app instance
 app = Flask(__name__)
 print('headless started')
 # Create Firefox webdriver instance
-driver = webdriver.Firefox(options=options)
 # Define the route for scraping
 
 @app.route('/', methods=['GET'])
 
 # Define the route for scraping
 def scrape():
-    url = ['https://www.nike.com/w/mens-shoes-nik1zy7ok',
-       'https://www.nike.com/w/mens-lifestyle-shoes-13jrmznik1zy7ok',
-       'https://www.nike.com/w/mens-jordan-shoes-37eefznik1zy7ok',
-       'https://www.nike.com/w/mens-air-max-shoes-a6d8hznik1zy7ok',
-       'https://www.nike.com/w/mens-air-force-1-shoes-5sj3yznik1zy7ok',
-       'https://www.nike.com/w/mens-90aohz9gw3aznik1',
-       'https://www.nike.com/w/womens-shoes-5e1x6zy7ok',
-       'https://www.nike.com/w/womens-lifestyle-shoes-13jrmz5e1x6zy7ok',
-       'https://www.nike.com/w/womens-jordan-shoes-37eefz5e1x6zy7ok',
-       'https://www.nike.com/w/womens-air-max-shoes-5e1x6za6d8hzy7ok',
-       'https://www.nike.com/w/womens-air-force-1-shoes-5e1x6z5sj3yzy7ok',
-       'https://www.nike.com/w/womens-5e1x6z90aohz9gw3a',
-       'https://www.nike.com/w/womens-100-and-under-shoes-3s37kz5e1x6zy7ok',
-       'https://www.nike.com/w/kids-shoes-v4dhzy7ok',
-       'https://www.nike.com/w/big-kids-shoes-agibjzv4dhzy7ok',
-       'https://www.nike.com/w/little-kids-shoes-6dacezv4dhzy7ok',
-       'https://www.nike.com/w/baby-toddler-kids-shoes-2j488zv4dhzy7ok',
-       'https://www.nike.com/w/kids-lifestyle-shoes-13jrmzv4dhzy7ok',
-       'https://www.nike.com/w/kids-jordan-shoes-37eefzv4dhzy7ok',
-       'https://www.nike.com/w/kids-air-max-shoes-a6d8hzv4dhzy7ok',
-       'https://www.nike.com/w/kids-air-force-1-lifestyle-shoes-13jrmz5sj3yzv4dhzy7ok',
-       'https://www.nike.com/w/1onraz3aqegz90aohz9gw3a',
-       'https://www.nike.com/w/kids-under-70-shoes-abelozv4dhzy7ok']
-    # Navigate to the webpage
-    for i in url:
-        if (i=='https://www.nike.com/w/mens-shoes-nik1zy7ok'):         
-            Gender = 'Men'
-        elif(i=='https://www.nike.com/w/mens-lifestyle-shoes-13jrmznik1zy7ok'):
-            Type = 'LifeStyle shoes'
-            Gender = 'Men'
-        elif(i=='https://www.nike.com/w/mens-jordan-shoes-37eefznik1zy7ok'):
-            Type = 'Jordan Shoes'
-            Gender = 'Men'
-        elif(i=='https://www.nike.com/w/mens-air-max-shoes-a6d8hznik1zy7ok'):
-            Type = 'Air Max Shoes'
-            Gender = 'Men'
-        elif(i=='https://www.nike.com/w/mens-air-force-1-shoes-5sj3yznik1zy7ok'):
-            Type = 'Air Force 1 Shoes'
-            Gender = 'Men'
-        elif(i=='https://www.nike.com/w/mens-90aohz9gw3aznik1'):
-            Sp_filter = 'Best'
-            Gender = 'Men'
-        elif (i=='https://www.nike.com/w/womens-shoes-5e1x6zy7ok'):         
-            Gender = 'Women'
-        elif(i=='https://www.nike.com/w/womens-lifestyle-shoes-13jrmz5e1x6zy7ok'):
-            Type = 'LifeStyle shoes'
-            Gender = 'Women'
-        elif(i=='https://www.nike.com/w/womens-jordan-shoes-37eefz5e1x6zy7ok'):
-            Type = 'Jordan Shoes'
-            Gender = 'Women'
-        elif(i=='https://www.nike.com/w/womens-air-max-shoes-5e1x6za6d8hzy7ok'):
-            Type = 'Air Max Shoes'
-            Gender = 'Women'
-        elif(i=='https://www.nike.com/w/womens-air-force-1-shoes-5e1x6z5sj3yzy7ok'):
-            Type = 'Air Force 1 Shoes'
-            Gender = 'Women'
-        elif(i=='https://www.nike.com/w/womens-5e1x6z90aohz9gw3a'):
-            Sp_filter = 'Best'
-            Gender = 'Women'
-        elif(i=='https://www.nike.com/w/womens-100-and-under-shoes-3s37kz5e1x6zy7ok'):
-            Sp_filter = 'sale under 100'
-            Gender = 'Women'
-        elif (i=='https://www.nike.com/w/kids-shoes-v4dhzy7ok'):         
-            Gender = 'Kid'
-        elif (i=='https://www.nike.com/w/big-kids-shoes-agibjzv4dhzy7ok'):         
-            Gender = 'Big kid'
-        elif (i=='https://www.nike.com/w/little-kids-shoes-6dacezv4dhzy7ok'):         
-            Gender = 'Little kid'
-        elif (i=='https://www.nike.com/w/baby-toddler-kids-shoes-2j488zv4dhzy7ok'):         
-            Gender = 'Toddler kid'
-        elif(i=='https://www.nike.com/w/kids-lifestyle-shoes-13jrmzv4dhzy7ok'):
-            Type = 'LifeStyle shoes'
-            Gender = 'Kid'
-        elif(i=='https://www.nike.com/w/kids-jordan-shoes-37eefzv4dhzy7ok'):
-            Type = 'Jordan Shoes'
-            Gender = 'Kid'
-        elif(i=='https://www.nike.com/w/kids-air-max-shoes-a6d8hzv4dhzy7ok'):
-            Type = 'Air Max Shoes'
-            Gender = 'Kid'
-        elif(i=='https://www.nike.com/w/kids-air-force-1-lifestyle-shoes-13jrmz5sj3yzv4dhzy7ok'):
-            Type = 'Air Force 1 Shoes'
-            Gender = 'Kid'
-        elif(i=='https://www.nike.com/w/1onraz3aqegz90aohz9gw3a'):
-            Sp_filter = 'Best'
-            Gender = 'Kid'
-        elif(i=='https://www.nike.com/w/kids-under-70-shoes-abelozv4dhzy7ok'):
-            Sp_filter = 'sale under 70'
-            Gender = 'Kid'
-        driver.get(url)
-        print('URL Fetched')
-
-        # Define the dictionary to hold the scraped data
+    urls = [
+        'https://www.nike.com/w/mens-shoes-nik1zy7ok',
+        'https://www.nike.com/w/womens-shoes-5e1x6zy7ok',
+        'https://www.nike.com/w/kids-shoes-v4dhzy7ok',
+    ]
+    
+    for i in urls:
+        # Set options for Firefox
+        options = Options()
+        options.add_argument('-headless')
+        driver = webdriver.Firefox(options=options)
         data = {"shoes": []}
         count = 0
         Gender = ''
         Company = 'Nike'
         Type = ''
         Sp_filter = ''
+        Seller = '01'
+        ProductID = ''
+        
+        if i == 'https://www.nike.com/w/mens-shoes-nik1zy7ok':
+            Gender = 'Men'
+            Sp_filter = 'Men'
+        elif i == 'https://www.nike.com/w/womens-shoes-5e1x6zy7ok':
+            Gender = 'Women'
+            Sp_filter = 'Women'
+        elif i == 'https://www.nike.com/w/kids-shoes-v4dhzy7ok':
+            Gender = 'Kid'
+            Sp_filter = 'Kid'
+        driver.get(i)
+        print('URL Fetched')
+
+        # Define the dictionary to hold the scraped data
 
         # Loop until there are no more products to scrape
         while True:
@@ -154,14 +83,13 @@ def scrape():
                     full_price = product.find('div', {'class': 'product-card__price'}).find('div', {'class': 'is--current-price'}).text
                     full_price = full_price.replace('$', '')
                     item = {'Type': 'Nike', 'Link': link, 'Name': name, 'Gender': Gender, 'Company': Company, 'Type': Type, 'Sp_filter': Sp_filter,
-                            'Image': image, 'Color': color, 'Full_prices': full_price}
+                            'Image': image, 'Color': color, 'Full_prices': full_price, 'Seller':Seller, 'ProductID':ProductID}
                     data["shoes"].append(item)
                     print(item)
                     if (count >= 1):
                         break
                 if (count >= 1):
                         break
-            # Scrape the description for each item
             # Scrape the description for each item
         for item in data["shoes"]:
             driver.get(item["Link"])
@@ -179,27 +107,24 @@ def scrape():
                         item["Description"] = description
                         print('desc',description)
                     except:
-                        item["Description"] = 'Nothing'
+                        item["Description"] = 'We apologize for any inconvenience. Unfortunately, we were unable to fetch the description at this time. Please click on the button below and visit the website for more information. We are currently working on the issue and hope to have it resolved soon. Thank you for your understanding.'
                     # Print the dictionary for the current shoe item with its added description
                     print(item)
-            else:
-                print(f"Link visited ({driver.current_url}) does not match the unique ID ({item['ID']}) of the current shoe item.")
-                print("Skipping description retrieval for this item.")
+            else: item["Description"] = 'We apologize for any inconvenience. Unfortunately, we were unable to fetch the description at this time. Please click on the button below and visit the website for more information. We are currently working on the issue and hope to have it resolved soon. Thank you for your understanding.'
         for item in data["shoes"]:
             query = db.collection(u'Products Data').where(u'Link', u'==', item['Link']).limit(1)
             docs = list(query.stream())
             if len(docs) > 0:
                 # Update the existing document with the new data
                 doc = docs[0]
-                doc_ref = db.collection(u'Nike Data').document(doc.id)
+                doc_ref = db.collection(u'Products Data').document(doc.id)
                 update_dict = {"Description": item["Description"], "Name": item["Name"], "Gender": item["Gender"],"Company": item["Company"],"Type": item["Type"],"Sp_filter": item["Sp_filter"],
                                 "Image": item["Image"], "Color": item["Color"], "Full_prices": item["Full_prices"]}
                 doc_ref.update(update_dict)
             else:
-                db.collection(u'Nike Data').add(item)
+                db.collection(u'Products Data').add(item)
         # Close the browser
-        driver.quit()
-        return jsonify(data)
+    driver.quit()
 
 if __name__ == '__main__':
     app.run(port=5000)

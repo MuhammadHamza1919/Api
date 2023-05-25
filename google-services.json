@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "917737924926",
+    "project_id": "shoescanner-26aa5",
+    "storage_bucket": "shoescanner-26aa5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:917737924926:android:6d2b3e9c64873e3a88e46f",
+        "android_client_info": {
+          "package_name": "com.zaiam.shoescannerapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "917737924926-88ob0ui4ohksk3a4kjj2nidfvqps3e1e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOlYkl9Qh6EciQRuCtLa1DxLJ4KsJ0O1w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "917737924926-88ob0ui4ohksk3a4kjj2nidfvqps3e1e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
